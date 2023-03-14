@@ -23,8 +23,10 @@ public class Words {
             throw new RuntimeException(e);
         }
         try (Stream<String> lines = Files.lines(Path.of(in))) {
-            // todo: probably not the right data structure 
-            Set<String> words = lines.collect(Collectors.toSet());
+            // todo: maybe not the right data structure 
+            Set<String> words = lines
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
             return new Words(words);
         }
     }
@@ -34,4 +36,5 @@ public class Words {
     private Words(Set<String> words) {
         this.words = Objects.requireNonNull(words);
     }
+    
 }
