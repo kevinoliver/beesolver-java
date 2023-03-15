@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 
 public class WordsTest {
 
-    private static final URL TEST1 = WordsTest.class.getClassLoader().getResource("test1.txt");
+    private static final URL WORDS1 = WordsTest.class.getClassLoader().getResource("test1.txt");
 
     @Test
     public void containsFiltersOutShortWords() throws Exception {
-        Words words = Words.load(TEST1);
+        Words words = Words.load(WORDS1);
         assertTrue(words.contains("dogs"));
         assertFalse(words.contains("cat"));
     }
