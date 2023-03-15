@@ -11,15 +11,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Words {
+public class Dictionary {
 
     private static final String DEFAULT_PATH = "/american-english-small";
 
-    public static Words load() throws IOException {
-        return load(Words.class.getClassLoader().getResource(DEFAULT_PATH));
+    public static Dictionary load() throws IOException {
+        return load(Dictionary.class.getClassLoader().getResource(DEFAULT_PATH));
     }
 
-    static Words load(URL wordFile) throws IOException {
+    static Dictionary load(URL wordFile) throws IOException {
         URI in;
         try {
             in = wordFile.toURI();
@@ -31,13 +31,13 @@ public class Words {
             Set<String> words = lines
                 .filter(word -> word.length() > 3)
                 .collect(Collectors.toSet());
-            return new Words(words);
+            return new Dictionary(words);
         }
     }    
 
     private final Set<String> words;
 
-    private Words(Set<String> words) {
+    private Dictionary(Set<String> words) {
         this.words = Objects.requireNonNull(words);
     }
 

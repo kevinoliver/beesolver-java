@@ -11,8 +11,5 @@ public class App {
         System.out.println("🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝");
         System.out.println("Hello and welcome to Spelling Bee Solver");
         System.out.println("🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝🐝");
-
-        Words words = Words.load();
-        Solver solver = Solver.fromWords(words);
     }
 }

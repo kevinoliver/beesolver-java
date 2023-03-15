@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class Solver {
 
-    public static Solver fromWords(Words words) {
-        return new Solver(words);
+    public static Solver from(Dictionary dictionary) {
+        return new Solver(dictionary);
     }
 
-    private final Words words;
+    private final Dictionary dictionary;
 
-    private Solver(Words words) {
-        this.words = Objects.requireNonNull(words);
+    private Solver(Dictionary words) {
+        this.dictionary = Objects.requireNonNull(words);
     }
 
 }
