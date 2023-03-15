@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 public class PuzzleTest {
     
     @Test
-    public void testFromNotEnoughLetters() {
+    public void fromThrowsWhenNotGivenEnoughLetters() {
         assertThrows(IllegalArgumentException.class, () -> Puzzle.from('c', "123"));
     }
 
-    // todo: other from tests
+    // todo: other `from` tests
 
     @Test
     public void isValidForValidWords() throws Exception {
