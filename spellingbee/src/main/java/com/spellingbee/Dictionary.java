@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class Dictionary {
 
-    private static final String DEFAULT_PATH = "/american-english-small";
+    private static final String DEFAULT_PATH = "american-english-small";
 
     public static Dictionary load() throws IOException {
         return load(Dictionary.class.getClassLoader().getResource(DEFAULT_PATH));
