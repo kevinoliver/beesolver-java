@@ -41,8 +41,8 @@ public class Dictionary {
         this.words = Objects.requireNonNull(words);
     }
 
-    public boolean contains(String word) {
-        return words.contains(word);
-    }
+    public Stream<String> allWords() {
+        return words.stream();
+    } 
     
 }

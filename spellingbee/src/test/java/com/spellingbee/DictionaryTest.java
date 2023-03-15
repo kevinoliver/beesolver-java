@@ -4,18 +4,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 public class DictionaryTest {
 
-    private static final URL WORDS1 = DictionaryTest.class.getClassLoader().getResource("test1.txt");
+    static final URL WORDS1 = DictionaryTest.class.getClassLoader().getResource("test1.txt");
 
     @Test
-    public void containsFiltersOutShortWords() throws Exception {
+    public void allWordsFiltersOutShortWords() throws Exception {
         Dictionary dictionary = Dictionary.load(WORDS1);
-        assertTrue(dictionary.contains("dogs"));
-        assertFalse(dictionary.contains("cat"));
+        Set<String> allWords = dictionary.allWords().collect(Collectors.toSet());
+        assertTrue(allWords.contains("dogs"));
+        assertFalse(allWords.contains("cat"));
     }
     
 }
