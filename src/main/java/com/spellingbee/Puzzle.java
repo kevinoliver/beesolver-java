@@ -30,7 +30,7 @@ public class Puzzle {
         this.allowedLetters = allowedLetters;
     }
 
-    public boolean isValid(String candidate) {
+    public Result resultFor(String candidate) {
         boolean foundRequired = false;
         boolean allAreAllowed = true;
         for (int i = 0; i < candidate.length(); i++) {
@@ -43,7 +43,16 @@ public class Puzzle {
                 break;
             }
         }
-        return foundRequired && allAreAllowed;
+        if (foundRequired && allAreAllowed) {
+            HashSet<Character> uniqueLetters = new HashSet<Character>();
+            for (int i = 0; i < candidate.length(); i++) {
+                uniqueLetters.add(candidate.charAt(i));
+            }
+            boolean isPangram = uniqueLetters.size() == 7;
+            return new Result.Valid(candidate, isPangram);
+        } else {
+            return new Result.Invalid(candidate);
+        }
     }
 
 }

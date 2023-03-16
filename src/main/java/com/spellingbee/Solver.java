@@ -18,10 +18,12 @@ public class Solver {
         this.puzzle = Objects.requireNonNull(puzzle);
     }
 
-    public List<String> solve() {
+    public List<Result.Valid> solve() {
         return dictionary.allWords()
-            .filter(candidate -> puzzle.isValid(candidate))
-            .sorted()
+            .map(candidate -> puzzle.resultFor(candidate))
+            .filter(Result::isValid)
+            .sorted(Result.COMPARATOR)
+            .map(Result.Valid.class::cast)
             .collect(Collectors.toList());
     }
 

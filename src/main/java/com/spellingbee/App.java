@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Hello world!
- *
- */
 public class App {
     
     public static void main(String[] args) throws IOException {
@@ -31,15 +27,22 @@ public class App {
         System.err.println("Solving now");
         System.err.println("🐝🐝🐝🐝");
 
-        List<String> solutions = solver.solve();
+        List<Result.Valid> solutions = solver.solve();
         
         System.err.println("🐝🐝🐝🐝🐝");
         System.err.println("Solved!");
+        System.err.println();
+        System.err.println("  Words: " + solutions.size());
+        System.err.println("  Pangrams: " + solutions.stream().filter(Result.Valid::isPangram).count());
         System.err.println("🐝🐝🐝🐝🐝🐝");
         System.err.println();
 
-        for (String solution : solutions) {
-            System.out.println(solution);
+        for (Result.Valid solution : solutions) {
+            if (solution.isPangram()) {
+                System.out.println(solution.word() + " 🍳");
+            } else {
+                System.out.println(solution.word());
+            }
         }
     }
 

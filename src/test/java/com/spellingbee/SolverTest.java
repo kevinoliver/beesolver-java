@@ -13,7 +13,7 @@ public class SolverTest {
         Dictionary dictionary = Dictionary.load(DictionaryTest.WORDS1);
         Puzzle puzzle = Puzzle.from('d', "ogselm");
         Solver solver = Solver.from(dictionary, puzzle);
-        List<String> solutions = solver.solve();
-        assertEquals(List.of("dogs"), solutions);
+        List<Result.Valid> solutions = solver.solve();
+        assertEquals(List.of(Result.valid("dogs")), solutions);
     }
 }

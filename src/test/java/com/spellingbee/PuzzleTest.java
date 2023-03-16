@@ -27,22 +27,38 @@ public class PuzzleTest {
     @Test
     public void isValidForValidWords() throws Exception {
         Puzzle puzzle = Puzzle.from('d', "ogselm");
-        assertTrue(puzzle.isValid("dogs"));
-        assertTrue(puzzle.isValid("doom"));
-        assertTrue(puzzle.isValid("does"));
-        assertTrue(puzzle.isValid("moods"));
+        assertTrue(puzzle.resultFor("dogs").isValid());
+        assertTrue(puzzle.resultFor("doom").isValid());
+        assertTrue(puzzle.resultFor("does").isValid());
+        assertTrue(puzzle.resultFor("moods").isValid());
     }
 
     @Test
     public void isNotValidForWordsMissingRequiredLetter() {
         Puzzle puzzle = Puzzle.from('d', "ogselm");
-        assertFalse(puzzle.isValid("logs"));
+        assertFalse(puzzle.resultFor("logs").isValid());
     }
 
     @Test
     public void isNotValidForWordsContainingUnallowedLetters() {
         Puzzle puzzle = Puzzle.from('d', "ogselm");
-        assertFalse(puzzle.isValid("deal"));
-        assertFalse(puzzle.isValid("seal"));
+        assertFalse(puzzle.resultFor("deal").isValid());
+        assertFalse(puzzle.resultFor("seal").isValid());
     }
+
+    @Test
+    public void isPangramForPangrams() {
+        Puzzle puzzle = Puzzle.from('d', "ogselm");
+        assertTrue(puzzle.resultFor("dogselm").isPangram());
+        assertTrue(puzzle.resultFor("dogselmm").isPangram());
+        assertTrue(puzzle.resultFor("dogselmdogselm").isPangram());
+    }
+
+    @Test
+    public void isPangramForNonPangrams() {
+        Puzzle puzzle = Puzzle.from('d', "ogselm");
+        assertFalse(puzzle.resultFor("dogsel").isPangram());
+        assertFalse(puzzle.resultFor("dogsell").isPangram());
+    }
+
 }
