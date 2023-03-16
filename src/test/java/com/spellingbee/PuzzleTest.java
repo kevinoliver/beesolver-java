@@ -9,11 +9,20 @@ import org.junit.jupiter.api.Test;
 public class PuzzleTest {
     
     @Test
-    public void fromThrowsWhenNotGivenEnoughLetters() {
-        assertThrows(IllegalArgumentException.class, () -> Puzzle.from('c', "123"));
+    public void fromThrowsWhenOtherLettersDoesntHaveSixLetters() {
+        assertThrows(IllegalArgumentException.class, () -> Puzzle.from('c', "12345"));
+        assertThrows(IllegalArgumentException.class, () -> Puzzle.from('c', "1234567"));
     }
 
-    // todo: other `from` tests
+    @Test
+    public void fromThrowsWithDuplicatesInOtherLetters() {
+        assertThrows(IllegalArgumentException.class, () -> Puzzle.from('z', "abcdee"));
+    }
+
+    @Test
+    public void fromThrowsWhenOtherLettersHasRequiredLetter() {
+        assertThrows(IllegalArgumentException.class, () -> Puzzle.from('z', "abcdez"));
+    }
 
     @Test
     public void isValidForValidWords() throws Exception {
