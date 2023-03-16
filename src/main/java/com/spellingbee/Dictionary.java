@@ -14,7 +14,10 @@ import java.util.stream.Stream;
 
 public class Dictionary {
 
-    private static final String DEFAULT_PATH = "american-english";
+    /**
+     * This dictionary comes from the Debian package `wamerican-large`.
+     */
+    private static final String DEFAULT_PATH = "american-english-large";
 
     public static Dictionary load() throws IOException {
         URL file = Dictionary.class.getClassLoader().getResource(DEFAULT_PATH);
