@@ -27,7 +27,8 @@ public class Dictionary {
             throw new RuntimeException(e);
         }
         try (Stream<String> lines = Files.lines(Path.of(in))) {
-            // todo: maybe not the right data structure 
+            // - Spelling Bee words must be 4 letters of more
+            // - Using a Set removes any duplicates
             Set<String> words = lines
                 .filter(word -> word.length() > 3)
                 .collect(Collectors.toSet());
