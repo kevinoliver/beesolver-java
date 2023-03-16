@@ -1,5 +1,6 @@
 package com.spellingbee;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +17,11 @@ public class Dictionary {
     private static final String DEFAULT_PATH = "american-english";
 
     public static Dictionary load() throws IOException {
-        return load(Dictionary.class.getClassLoader().getResource(DEFAULT_PATH));
+        URL file = Dictionary.class.getClassLoader().getResource(DEFAULT_PATH);
+        if (file == null) {
+            throw new FileNotFoundException("Dictionary file not found: " + DEFAULT_PATH);
+        }
+        return load(file);
     }
 
     static Dictionary load(URL wordFile) throws IOException {
