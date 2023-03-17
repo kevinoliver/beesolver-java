@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,9 +37,11 @@ public class Dictionary {
         }
         try (Stream<String> lines = Files.lines(Path.of(in))) {
             // - Spelling Bee words must be 4 letters of more
+            // - removing accents allows us to match on words like "éclair"
             // - Using a Set removes any duplicates
             Set<String> words = lines
                 .filter(word -> word.length() > 3)
+                .map(Dictionary::removeAccents)
                 .collect(Collectors.toSet());
             return new Dictionary(words);
         }
@@ -53,5 +56,15 @@ public class Dictionary {
     public Stream<String> allWords() {
         return words.stream();
     } 
+
+    // Implementation from:
+    // https://www.baeldung.com/java-remove-accents-from-text
+    static String removeAccents(String word) {
+        if (Normalizer.isNormalized(word, Normalizer.Form.NFKD)) {
+            return word;
+        }
+        String normalized = Normalizer.normalize(word, Normalizer.Form.NFKD);
+        return normalized.replaceAll("\\p{M}", "");
+    }
     
 }

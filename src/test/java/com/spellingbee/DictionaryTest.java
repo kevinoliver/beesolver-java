@@ -20,5 +20,13 @@ public class DictionaryTest {
         assertTrue(allWords.contains("dogs"));
         assertFalse(allWords.contains("cat"));
     }
+
+    @Test
+    public void allWordsRemovesAccents() throws Exception {
+        Dictionary dictionary = Dictionary.load(WORDS1);
+        Set<String> allWords = dictionary.allWords().collect(Collectors.toSet());
+        assertTrue(allWords.contains("eclair"));
+        assertFalse(allWords.contains("éclair"));
+    }
     
 }
