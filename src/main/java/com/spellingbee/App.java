@@ -1,5 +1,6 @@
 package com.spellingbee;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,9 @@ public class App implements Callable<Integer> {
     @Parameters(index = "1", paramLabel = "OTHER_LETTERS", description = "The 6 other allowed letters")
     private String others;
 
+    @Option(names = "--dict", paramLabel = "DICTIONARY", description = "Path to a custom dictionary file")
+    private File dictionaryFile;
+
     private void validate() {
         if (others.length() != 6) {
             throw new ParameterException(spec.commandLine(),
@@ -42,11 +46,10 @@ public class App implements Callable<Integer> {
             throw new ParameterException(spec.commandLine(),
                 "OTHER_LETTERS cannot contain the REQUIRED_LETTER: '" + required + "'");
         }
+        if (dictionaryFile != null && !dictionaryFile.exists()) {
+            throw new ParameterException(spec.commandLine(), "DICTIONARY not found: '" + dictionaryFile + "'");
+        }
     }
-
-    // todo validation
-    @Option(names = "--dict", paramLabel = "DICTIONARY_FILE", description = "Path to a custom dictionary file")
-    private String dictionaryPath;
 
     public static void main(String[] args) throws IOException {
         int exitCode = new CommandLine(new App()).execute(args); 
@@ -62,12 +65,17 @@ public class App implements Callable<Integer> {
         System.err.println("🐝🐝");
 
         Puzzle puzzle = Puzzle.from(required, others);
-        Dictionary dictionary = Dictionary.load();
+        Dictionary dictionary = dictionaryFile == null
+            ? Dictionary.load()
+            : Dictionary.load(dictionaryFile.toURI());
         Solver solver = Solver.from(dictionary, puzzle);
 
         System.err.println("🐝🐝🐝");
         System.err.println("Required Letter: " + required);
         System.err.println("Other Letters:   " + others);
+        if (dictionaryFile != null) {
+            System.err.println("Dictionary:      " + dictionaryFile);
+        }
         System.err.println("Solving now");
         System.err.println("🐝🐝🐝🐝");
 

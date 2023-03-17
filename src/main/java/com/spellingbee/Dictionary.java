@@ -25,17 +25,15 @@ public class Dictionary {
         if (file == null) {
             throw new FileNotFoundException("Dictionary file not found: " + DEFAULT_PATH);
         }
-        return load(file);
-    }
-
-    static Dictionary load(URL wordFile) throws IOException {
-        URI in;
         try {
-            in = wordFile.toURI();
+            return load(file.toURI());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        try (Stream<String> lines = Files.lines(Path.of(in))) {
+    }
+
+    public static Dictionary load(URI dictionaryFile) throws IOException {        
+        try (Stream<String> lines = Files.lines(Path.of(dictionaryFile))) {
             // - Spelling Bee words must be 4 letters of more
             // - removing accents allows us to match on words like "éclair"
             // - Using a Set removes any duplicates

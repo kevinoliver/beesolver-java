@@ -3,6 +3,8 @@ package com.spellingbee;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,7 +13,15 @@ import org.junit.jupiter.api.Test;
 
 public class DictionaryTest {
 
-    static final URL WORDS1 = DictionaryTest.class.getClassLoader().getResource("test1.txt");
+    static final URI WORDS1;
+    static {
+        try {
+            URL resource = DictionaryTest.class.getClassLoader().getResource("test1.txt");
+            WORDS1 = resource.toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     public void allWordsFiltersOutShortWords() throws Exception {
