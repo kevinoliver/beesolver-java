@@ -3,27 +3,71 @@ package com.spellingbee;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class App {
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParameterException;
+import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Spec;
+import picocli.CommandLine.Model.CommandSpec;
+
+@Command(name = "beesolver", version = "Beesolver 1.0", mixinStandardHelpOptions = true) 
+public class App implements Callable<Integer> {
     
-    public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            printUsageAndExit();
+    @Spec 
+    CommandSpec spec; // injected by picocli
+
+    @Parameters(index = "0", paramLabel = "REQUIRED_LETTER", description = "The letter required in all words")
+    private char required;
+
+    @Parameters(index = "1", paramLabel = "OTHER_LETTERS", description = "The 6 other allowed letters")
+    private String others;
+
+    private void validate() {
+        if (others.length() != 6) {
+            throw new ParameterException(spec.commandLine(),
+                "OTHER_LETTERS must be exactly 6 letters, found: " + others.length());
         }
-        char requiredLetter = requiredLetterOrExit(args[0]);
-        String otherLetters = otherLettersOrExit(args[1], requiredLetter);
+        HashSet<Character> letters = new HashSet<Character>();
+        for (int i = 0; i < others.length(); i++) {
+            char letter = others.charAt(i); 
+            if (!letters.add(letter)) {
+                throw new ParameterException(spec.commandLine(),
+                    "OTHER_LETTERS cannot have duplicate letters, found: '" + letter + "'");
+            }
+        }
+        if (letters.contains(required)) {
+            throw new ParameterException(spec.commandLine(),
+                "OTHER_LETTERS cannot contain the REQUIRED_LETTER: '" + required + "'");
+        }
+    }
+
+    // todo validation
+    @Option(names = "--dict", paramLabel = "DICTIONARY_FILE", description = "Path to a custom dictionary file")
+    private String dictionaryPath;
+
+    public static void main(String[] args) throws IOException {
+        int exitCode = new CommandLine(new App()).execute(args); 
+        System.exit(exitCode); 
+    }
+
+    @Override
+    public Integer call() throws IOException { 
+        validate();
 
         System.err.println("🐝");
         System.err.println("Hello and welcome to Spelling Bee Solver");
         System.err.println("🐝🐝");
 
-        Puzzle puzzle = Puzzle.from(requiredLetter, otherLetters);
+        Puzzle puzzle = Puzzle.from(required, others);
         Dictionary dictionary = Dictionary.load();
         Solver solver = Solver.from(dictionary, puzzle);
 
         System.err.println("🐝🐝🐝");
-        System.err.println("Required Letter: " + requiredLetter);
-        System.err.println("Other Letters:   " + otherLetters);
+        System.err.println("Required Letter: " + required);
+        System.err.println("Other Letters:   " + others);
         System.err.println("Solving now");
         System.err.println("🐝🐝🐝🐝");
 
@@ -44,45 +88,7 @@ public class App {
                 System.out.println(solution.word());
             }
         }
+        return 0;
     }
 
-    private static char requiredLetterOrExit(String arg) {
-        if (arg.length() != 1) {
-            printUsageAndExit("required-letter must be a single letter, found: '" + arg + "'");
-        }
-        return arg.charAt(0);
-    }
-
-    private static String otherLettersOrExit(String arg, char requiredLetter) {
-        if (arg.length() != 6) {
-            printUsageAndExit("other-letters must be exactly 6 letters, found: '" + arg + "'");
-        }
-        HashSet<Character> letters = new HashSet<Character>();
-        for (int i = 0; i < arg.length(); i++) {
-            char letter = arg.charAt(i); 
-            if (!letters.add(letter)) {
-                printUsageAndExit("other-letters cannot have duplicate letters, found: '" + letter + "'");
-            }
-        }
-        if (letters.contains(requiredLetter)) {
-            printUsageAndExit("other-letters cannot contain the required-letter: '" + requiredLetter + "'");
-        }
-        return arg;
-    }
-
-    private static void printUsageAndExit() {
-        printUsageAndExit(null);
-    }
-
-    private static void printUsageAndExit(String additionalMessage) {
-        System.err.println("Usage: required-letter other-letters");
-        System.err.println();
-        System.err.println("    required-letter - must be a single letter");
-        System.err.println("    other-letters   - must be 6 unique letters and cannot include required-letter");
-        if (additionalMessage != null) {
-            System.err.println();
-            System.err.println(additionalMessage);
-        }
-        System.exit(1);
-    }
 }
