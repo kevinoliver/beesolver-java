@@ -29,6 +29,13 @@ public class App implements Callable<Integer> {
     @Option(names = "--dict", paramLabel = "DICTIONARY", description = "Path to a custom dictionary file")
     private File dictionaryFile;
 
+    @Option(names = "--words-output", 
+        negatable = true,
+        defaultValue = "true", 
+        fallbackValue = "true",
+        description = "Default on. When off, the solution's words are hidden")
+    private boolean wordsOutput;
+
     private void validate() {
         if (others.length() != 6) {
             throw new ParameterException(spec.commandLine(),
@@ -87,13 +94,14 @@ public class App implements Callable<Integer> {
         System.err.println("  Words: " + solutions.size());
         System.err.println("  Pangrams: " + solutions.stream().filter(Result.Valid::isPangram).count());
         System.err.println("🐝🐝🐝🐝🐝🐝");
-        System.err.println();
 
-        for (Result.Valid solution : solutions) {
-            if (solution.isPangram()) {
-                System.out.println(solution.word() + " 🍳");
-            } else {
-                System.out.println(solution.word());
+        if (wordsOutput) {
+            for (Result.Valid solution : solutions) {
+                if (solution.isPangram()) {
+                    System.out.println(solution.word() + " 🍳");
+                } else {
+                    System.out.println(solution.word());
+                }
             }
         }
         return 0;
