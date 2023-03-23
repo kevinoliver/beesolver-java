@@ -78,11 +78,10 @@ public class App implements Callable<Integer> {
         Solver solver = Solver.from(dictionary, puzzle);
 
         System.err.println("🐝🐝🐝");
-        System.err.println("Required Letter: " + required);
-        System.err.println("Other Letters:   " + others);
-        if (dictionaryFile != null) {
-            System.err.println("Dictionary:      " + dictionaryFile);
-        }
+        System.err.println("Required Letter:  " + required);
+        System.err.println("Other Letters:    " + others);
+        System.err.println("Dictionary:       " + dictionary.name());
+        System.err.println("Dictionary words: " + dictionary.allWords().count());
         System.err.println("Solving now");
         System.err.println("🐝🐝🐝🐝");
 

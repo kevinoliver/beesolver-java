@@ -20,19 +20,25 @@ public class Dictionary {
      */
     private static final String DEFAULT_PATH = "american-english-large";
 
+    private static final String DEFAULT_NAME = "(default)";
+
     public static Dictionary load() throws IOException {
         URL file = Dictionary.class.getClassLoader().getResource(DEFAULT_PATH);
         if (file == null) {
             throw new FileNotFoundException("Dictionary file not found: " + DEFAULT_PATH);
         }
         try {
-            return load(file.toURI());
+            return load(DEFAULT_NAME, file.toURI());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Dictionary load(URI dictionaryFile) throws IOException {        
+    public static Dictionary load(URI dictionaryFile) throws IOException {
+        return load(dictionaryFile.getPath(), dictionaryFile);
+    }
+
+    private static Dictionary load(String name, URI dictionaryFile) throws IOException {
         try (Stream<String> lines = Files.lines(Path.of(dictionaryFile))) {
             // - Spelling Bee words must be 4 letters of more
             // - removing accents allows us to match on words like "éclair"
@@ -41,14 +47,20 @@ public class Dictionary {
                 .filter(word -> word.length() > 3)
                 .map(Dictionary::removeAccents)
                 .collect(Collectors.toSet());
-            return new Dictionary(words);
+            return new Dictionary(name, words);
         }
     }    
 
     private final Set<String> words;
+    private final String name;
 
-    private Dictionary(Set<String> words) {
+    private Dictionary(String name, Set<String> words) {
+        this.name = Objects.requireNonNull(name);
         this.words = Objects.requireNonNull(words);
+    }
+
+    public String name() {
+        return name;
     }
 
     public Stream<String> allWords() {
