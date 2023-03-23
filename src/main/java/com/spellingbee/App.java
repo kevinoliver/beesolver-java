@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -72,9 +73,11 @@ public class App implements Callable<Integer> {
         System.err.println("🐝🐝");
 
         Puzzle puzzle = Puzzle.from(required, others);
+        long start = System.nanoTime();
         Dictionary dictionary = dictionaryFile == null
             ? Dictionary.load()
             : Dictionary.load(dictionaryFile.toURI());
+        long elapsedDictionaryNs = System.nanoTime() - start;
         Solver solver = Solver.from(dictionary, puzzle);
 
         System.err.println("🐝🐝🐝");
@@ -85,13 +88,17 @@ public class App implements Callable<Integer> {
         System.err.println("Solving now");
         System.err.println("🐝🐝🐝🐝");
 
+        start = System.nanoTime();
         List<Result.Valid> solutions = solver.solve();
+        long elapsedSolveNs = System.nanoTime() - start;
         
         System.err.println("🐝🐝🐝🐝🐝");
         System.err.println("Solved!");
         System.err.println();
         System.err.println("  Words: " + solutions.size());
         System.err.println("  Pangrams: " + solutions.stream().filter(Result.Valid::isPangram).count());
+        System.err.println("  Time loading dictionary: " + TimeUnit.NANOSECONDS.toMillis(elapsedDictionaryNs) +  " ms");
+        System.err.println("  Time solving: " + TimeUnit.NANOSECONDS.toMillis(elapsedSolveNs) + " ms");
         System.err.println("🐝🐝🐝🐝🐝🐝");
 
         if (wordsOutput) {
