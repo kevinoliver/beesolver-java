@@ -22,3 +22,11 @@ Usage: beesolver [-hV] [--[no-]words-output] [--dict=DICTIONARY]
 
 * Java 17
 * Maven 
+
+## Development
+
+Run all tests:
+
+```
+$ mvn test
+```
